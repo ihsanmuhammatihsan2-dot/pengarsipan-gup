@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Pengarsipan Lengkap</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f3f4f6;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #2563eb;
+      color: white;
+    }
+    .hapus-btn {
+      background-color: #ef4444;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .hapus-btn:hover {
+      background-color: #dc2626;
+    }
+  </style>
+</head>
+<body>
+  <h1>📁 Web Pengarsipan Lengkap</h1>
+  <div class="container">
+    <label>Nama Dokumen:</label>
+    <input type="text" id="nama">
+
+    <label>Tanggal:</label>
+    <input type="date" id="tanggal">
+
+    <label>Jenis Dokumen:</label>
+    <input type="text" id="jenis">
+
+    <label>Keterangan:</label>
+    <textarea id="keterangan"></textarea>
+
+    <button onclick="tambahData()">💾 Simpan</button>
+
+    <table id="tabelData">
+      <thead>
+        <tr>
+          <th>Nama Dokumen</th>
+          <th>Tanggal</th>
+          <th>Jenis</th>
+          <th>Keterangan</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    // Ambil data dari localStorage saat halaman dibuka
+    let dataArsip = JSON.parse(localStorage.getItem("arsip")) || [];
+
+    function tampilkanData() {
+      const tbody = document.getElementById("tabelData").getElementsByTagName("tbody")[0];
+      tbody.innerHTML = ""; // Hapus isi lama
+      dataArsip.forEach((data, index) => {
+        const row = tbody.insertRow();
+        row.insertCell(0).textContent = data.nama;
+        row.insertCell(1).textContent = data.tanggal;
+        row.insertCell(2).textContent = data.jenis;
+        row.insertCell(3).textContent = data.keterangan;
+        const aksiCell = row.insertCell(4);
+        aksiCell.innerHTML = `<button class="hapus-btn" onclick="hapusData(${index})">Hapus</button>`;
+      });
+    }
+
+    function tambahData() {
+      const nama = document.getElementById("nama").value;
+      const tanggal = document.getElementById("tanggal").value;
+      const jenis = document.getElementById("jenis").value;
+      const keterangan = document.getElementById("keterangan").value;
+
+      if (!nama || !tanggal || !jenis) {
+        alert("Harap isi semua data penting!");
+        return;
+      }
+
+      const dataBaru = { nama, tanggal, jenis, keterangan };
+      dataArsip.push(dataBaru);
+      localStorage.setItem("arsip", JSON.stringify(dataArsip));
+
+      tampilkanData();
+
+      document.getElementById("nama").value = "";
+      document.getElementById("tanggal").value = "";
+      document.getElementById("jenis").value = "";
+      document.getElementById("keterangan").value = "";
+    }
+
+    function hapusData(index) {
+      if (confirm("Yakin ingin menghapus data ini?")) {
+        dataArsip.splice(index, 1);
+        localStorage.setItem("arsip", JSON.stringify(dataArsip));
+        tampilkanData();
+      }
+    }
+
+    tampilkanData();
+  </script>
+</body>
+</html>
